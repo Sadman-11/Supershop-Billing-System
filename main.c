@@ -26,7 +26,6 @@ int login();
 int loggedIn = 0;
 int isUnique(int id);
 int findIndex(int id);
-int calculate(float price, int quantity);
 void add();
 void update();
 void display();
@@ -128,6 +127,7 @@ void display()
 void inventoryManagment()
 {
     int pick;
+    while(1){
     if (!loggedIn)
     {
         if (login())
@@ -142,7 +142,7 @@ void inventoryManagment()
         }
     }
 
-    printf("-----Inventory Management-----\n \t 1. Add Item\n \t 2. Update Item\n \t 3. Display Items\n \t 4. Customer Billing\n\t 5. Show Sold Items\n\t 0. Exit\n");
+    printf("-----Inventory Management-----\n \t 1. Add Item\n \t 2. Update Item\n \t 3. Display Items\n \t 0. Exit\n");
     printf("Enter your choice: ");
     scanf("%d", &pick);
 
@@ -157,31 +157,25 @@ void inventoryManagment()
     case 3:
         display();
         break;
-    case 4:
-        customerBilling();
-        break;
-    case 5:
-        showSoldItems();
-        break;
-    case 0:
-        exit(0);
+    case 0: return ;
     default:
         printf("Invalid choice.\n");
+    }
+
     }
 }
 
 void customerBilling()
 {
     float VAT_RATE = 0.10;
-    int n, id, qty, index;
+    int n, id, qty, index,dataIndex=0;
     cart data[800];
     float total = 0;
+    display();
 
-    printf("Enter number of items to buy: ");
-    scanf("%d", &n);
+    int more =1;
+  while(more){
 
-    for (int i = 0; i < n; i++)
-    {
         printf("Enter Item ID and Quantity: ");
         scanf("%d %d", &id, &qty);
 
@@ -189,21 +183,19 @@ void customerBilling()
 
         if (index == -1)
         {
-            printf("Item ID %d not found.\n", id);
-            i--;
+            printf("Item ID %d not found.\n",id);
             continue;
         }
 
         if (qty > inventory[index].quantity)
         {
             printf("Insufficient stock for %s.\n", inventory[index].name);
-            i--;
             continue;
         }
 
         inventory[index].quantity -= qty;
-        data[i].id = id;
-        data[i].quantity = qty;
+        data[dataIndex].id = id;
+        data[dataIndex].quantity = qty;
 
         sold[saleCount].id = id;
         strcpy(sold[saleCount].name, inventory[index].name);
@@ -211,8 +203,22 @@ void customerBilling()
         sold[saleCount].quantity = qty;
 
         total += inventory[index].price * qty;
-        saleCount += qty;
+        saleCount ++;
+        dataIndex++;
+    int pick;
+    printf("DO you anything else(1.Yes || 2.No): ");
+    scanf("%d",&pick);
+    if(pick==1){
+        more=1;
     }
+    else if(pick==2){
+        more=0;
+    }
+    else{
+        printf("Invalid choice!");
+        more=0;
+    }
+  }
 
     float vat = total * VAT_RATE;
     float finalTotal = total + vat;
@@ -220,7 +226,7 @@ void customerBilling()
     totalSales += finalTotal;
 
     printf("\n--- Bill Summary ---\n");
-    for (int i = 0; i < n; i++)
+    for (int i = 0; i < dataIndex; i++)
     {
         index = findIndex(data[i].id);
         printf("%s x %d = %.2f\n", inventory[index].name, data[i].quantity, inventory[index].price * data[i].quantity);
@@ -244,11 +250,25 @@ void showSoldItems()
     }
     printf("-----------------------------------------------\n");
 }
-int main()
-{
-    while (1)
-    {
-        inventoryManagment();
+int main() {
+    int choice;
+    while (1) {
+        printf("\n--- SuperShop Grocery Billing System ---\n");
+        printf("1. Inventory Management\n");
+        printf("2. Customer Billing\n");
+        printf("3. Daily Sales Report\n");
+        printf("4. Exit\n");
+        printf("Enter your choice: ");
+        scanf("%d", &choice);
+
+        switch (choice) {
+            case 1: inventoryManagment(); break;
+            case 2: customerBilling(); break;
+            case 3: showSoldItems(); break;
+            case 4: printf("Exiting... Goodbye!\n");
+                return 0;
+            default: printf("Invalid choice!\n");
+        }
     }
     return 0;
 }
