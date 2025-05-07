@@ -109,7 +109,7 @@ void update()
     }
     else
     {
-        printf("Product does not exist with that ID\n");
+        printf("\nProduct does not exist with that ID\n\n");
     }
 }
 
@@ -127,54 +127,56 @@ void display()
 void inventoryManagment()
 {
     int pick;
-    while(1){
-    if (!loggedIn)
+    while (1)
     {
-        if (login())
+        if (!loggedIn)
         {
-            loggedIn = 1;
-            printf("Login successful\n");
+            if (login())
+            {
+                loggedIn = 1;
+                printf("Login successful\n");
+            }
+            else
+            {
+                printf("Wrong username or PIN. Exiting.\n");
+                return;
+            }
         }
-        else
+
+        printf("-----Inventory Management-----\n \t 1. Add Item\n \t 2. Update Item\n \t 3. Display Items\n \t 0. Return to main menu\n");
+        printf("Enter your choice: ");
+        scanf("%d", &pick);
+
+        switch (pick)
         {
-            printf("Wrong username or PIN. Exiting.\n");
+        case 1:
+            add();
+            break;
+        case 2:
+            update();
+            break;
+        case 3:
+            display();
+            break;
+        case 0:
             return;
+        default:
+            printf("Invalid choice.\n");
         }
-    }
-
-    printf("-----Inventory Management-----\n \t 1. Add Item\n \t 2. Update Item\n \t 3. Display Items\n \t 0. Exit\n");
-    printf("Enter your choice: ");
-    scanf("%d", &pick);
-
-    switch (pick)
-    {
-    case 1:
-        add();
-        break;
-    case 2:
-        update();
-        break;
-    case 3:
-        display();
-        break;
-    case 0: return ;
-    default:
-        printf("Invalid choice.\n");
-    }
-
     }
 }
 
 void customerBilling()
 {
     float VAT_RATE = 0.10;
-    int n, id, qty, index,dataIndex=0;
+    int n, id, qty, index, dataIndex = 0;
     cart data[800];
     float total = 0;
     display();
 
-    int more =1;
-  while(more){
+    int more = 1;
+    while (more)
+    {
 
         printf("Enter Item ID and Quantity: ");
         scanf("%d %d", &id, &qty);
@@ -183,7 +185,7 @@ void customerBilling()
 
         if (index == -1)
         {
-            printf("Item ID %d not found.\n",id);
+            printf("Item ID %d not found.\n", id);
             continue;
         }
 
@@ -203,22 +205,25 @@ void customerBilling()
         sold[saleCount].quantity = qty;
 
         total += inventory[index].price * qty;
-        saleCount ++;
+        saleCount++;
         dataIndex++;
-    int pick;
-    printf("DO you anything else(1.Yes || 2.No): ");
-    scanf("%d",&pick);
-    if(pick==1){
-        more=1;
+        int pick;
+        printf("DO you anything else(1.Yes || 2.No): ");
+        scanf("%d", &pick);
+        if (pick == 1)
+        {
+            more = 1;
+        }
+        else if (pick == 2)
+        {
+            more = 0;
+        }
+        else
+        {
+            printf("Invalid choice!");
+            more = 0;
+        }
     }
-    else if(pick==2){
-        more=0;
-    }
-    else{
-        printf("Invalid choice!");
-        more=0;
-    }
-  }
 
     float vat = total * VAT_RATE;
     float finalTotal = total + vat;
@@ -250,10 +255,17 @@ void showSoldItems()
     }
     printf("-----------------------------------------------\n");
 }
-int main() {
+int main()
+{
     int choice;
-    while (1) {
-        printf("\n--- SuperShop Grocery Billing System ---\n");
+    printf("\n");
+    printf("*********************************\n");
+    printf("**  SuperShop Grocery Billing  **\n");
+    printf("**        System               **\n");
+    printf("*********************************\n");
+    while (1)
+    {
+        printf("\n--- Main Menu ---\n");
         printf("1. Inventory Management\n");
         printf("2. Customer Billing\n");
         printf("3. Daily Sales Report\n");
@@ -261,13 +273,22 @@ int main() {
         printf("Enter your choice: ");
         scanf("%d", &choice);
 
-        switch (choice) {
-            case 1: inventoryManagment(); break;
-            case 2: customerBilling(); break;
-            case 3: showSoldItems(); break;
-            case 4: printf("Exiting... Goodbye!\n");
-                return 0;
-            default: printf("Invalid choice!\n");
+        switch (choice)
+        {
+        case 1:
+            inventoryManagment();
+            break;
+        case 2:
+            customerBilling();
+            break;
+        case 3:
+            showSoldItems();
+            break;
+        case 4:
+            printf("Exiting... have a great day!\n");
+            return 0;
+        default:
+            printf("Invalid choice!\n");
         }
     }
     return 0;
